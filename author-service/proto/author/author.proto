@@ -1,0 +1,29 @@
+// author-service/proto/suthor/author.proto
+syntax = "proto3";
+
+package author; 
+
+service AuthorService {
+  rpc CreateAuthor(Author) returns (Response) {}
+}
+
+message Author {
+  string id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  repeated Book books = 4;
+  string country_id = 5;
+}
+
+message Book {
+  string id = 1;
+  string author_id = 2;
+  string language = 3;
+  string title = 4;
+  string description = 5;
+}
+
+message Response {
+  bool created = 1;
+  Author author = 2;
+}
