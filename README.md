@@ -1,0 +1,1 @@
+# author-publisher-manager
