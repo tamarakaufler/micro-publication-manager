@@ -1,0 +1,8 @@
+{
+  "first_name": "Lucien",
+  "last_name": "Kaufler",
+  "address": "6 St Barts Close, St Albans, GB",
+  "books": [
+    { "author_id": "1", "title": "My Journey", "category": "Autobiography", "language": "English", "pages": 350, "publisher_id": "1" }
+  ]
+}

@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package publication.management.author;
+
+//import "google/protobuf/empty.proto";
+
+service AuthorService {
+  rpc CreateAuthor(Author) returns (Response) {}
+  rpc GetAll(GetRequest) returns (Response) {}
+}
+
+message Author {
+  string id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string address = 4;
+  repeated Book books = 5;
+}
+
+message Book {
+  string id = 1;
+  string author_id = 2;
+  string title = 3;
+  string category = 4;
+  string language = 5;
+  int32 pages = 6;
+  string publisher_id = 7;
+}
+
+message GetRequest {}
+
+message Response {
+  bool created = 1;
+  Author author = 2;
+  repeated Author authors = 3;
+}
