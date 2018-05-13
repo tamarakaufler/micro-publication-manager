@@ -4,12 +4,8 @@ import (
 	"log"
 
 	micro "github.com/micro/go-micro"
-	// Import the generated protobuf code
 	pb "github.com/tamarakaufler/publication-manager/author-service/proto"
 
-	//"github.com/golang/protobuf/ptypes/empty"
-
-	//"google/protobuf/empty"
 	"golang.org/x/net/context"
 )
 
@@ -45,24 +41,29 @@ type service struct {
 }
 
 // CreateAuthor - service method to store the author in the database
-func (s *service) CreateAuthor(ctx context.Context, author *pb.Author) (*pb.Response, error) {
+func (s *service) CreateAuthor(ctx context.Context, author *pb.Author, res *pb.Response) error {
 
 	err := s.database.Create(author)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return &pb.Response{Created: true, Author: author}, nil
+	res.Author = author
+	res.Created = true
+
+	return nil
 }
 
-func (s *service) GetAuthors(ctx context.Context, req *pb.GetRequest) (*pb.Response, error) {
+func (s *service) GetAuthors(ctx context.Context, req *pb.GetRequest, res *pb.Response) error {
 
 	authors, err := s.database.GetAll()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return &pb.Response{Authors: authors}, nil
+	res.Authors = authors
+
+	return nil
 }
 
 func main() {
