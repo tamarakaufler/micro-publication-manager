@@ -6,12 +6,11 @@ import (
 	"log"
 	"os"
 
-	"github.com/micro/go-micro/cmd"
 	microclient "github.com/micro/go-micro/client"
+	"github.com/micro/go-micro/cmd"
 
 	pb "github.com/tamarakaufler/publication-manager/author-service/proto"
 	"golang.org/x/net/context"
-	"google.golang.org/grpc"
 )
 
 const (
@@ -32,16 +31,7 @@ func parseFile(file string) (*pb.Author, error) {
 func main() {
 	cmd.Init()
 
-	// Create new greeter client
 	client := pb.NewAuthorServiceClient("publication.management.author", microclient.DefaultClient)
-
-
-	// conn, err := grpc.Dial(address, grpc.WithInsecure())
-	// if err != nil {
-	// 	log.Fatalf("Error connecting: %v", err)
-	// }
-	// defer conn.Close()
-	// client := pb.NewAuthorServiceClient(conn)
 
 	file := defaultFilename
 	if len(os.Args) > 1 {

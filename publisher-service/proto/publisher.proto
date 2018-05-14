@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package publication.manager.publisher;
+
+service PublisherService {
+	rpc FindAvailable(Requirement) returns (Response) {}
+}
+
+message Publisher {
+	string id = 1;
+	string name = 2;
+	string country = 3;
+	string language = 4;
+	map<string, bool> category = 5;
+	int32 capacity = 6;
+	int32 commitment = 7;
+}
+
+message Requirement {
+	string language = 1;
+	string category = 2;
+	int32 copies = 3;
+}
+
+message Response {
+	Publisher publisher = 1;
+	bool availability = 2;
+}

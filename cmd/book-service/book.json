@@ -1,0 +1,10 @@
+{
+  "id": "book1",
+  "title": "My journey to stardom",
+  "category": "Autobiography",
+  "language": "English",
+  "pages": 500,
+  "author_id": "author1",
+  "copies": 10000
+}
+
