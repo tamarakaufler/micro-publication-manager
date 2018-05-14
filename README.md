@@ -1,1 +1,1 @@
-# author-publisher-manager
+# publication-manager
