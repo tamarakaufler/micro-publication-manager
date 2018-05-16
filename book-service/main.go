@@ -39,9 +39,9 @@ type service struct {
 // AddBook - service method to store the book in the database
 func (s *service) PublishBook(ctx context.Context, book *proto.Book, res *proto.Response) error {
 	publisherResponse, err := s.publisherClient.FindAvailable(context.Background(), &publisherProto.Requirement{
-		Language: "English",
-		Category: "Autobiography",
-		Copies:   5000,
+		Language: book.GetLanguage(),
+		Category: book.GetCategory(),
+		Copies:   book.GetCopies(),
 	})
 	if err != nil {
 		log.Println("No publisher found")

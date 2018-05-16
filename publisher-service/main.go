@@ -52,7 +52,7 @@ func (s *service) FindAvailable(ctx context.Context, req *proto.Requirement, res
 
 func main() {
 	publishers := []*proto.Publisher{
-		&proto.Publisher{Id: "publisher001", Name: "Mannings", Country: "USA", Language: "English", Category: map[string]bool{"Fiction": true, "Programming": true}, Capacity: 50000, Commitment: 450000},
+		&proto.Publisher{Id: "publisher001", Name: "Mannings", Country: "USA", Language: "English", Category: map[string]bool{"Autobiography": true, "Fiction": true, "Programming": true}, Capacity: 50000, Commitment: 45000},
 		&proto.Publisher{Id: "publisher002", Name: "LeMonde", Country: "France", Language: "French", Category: map[string]bool{"Fiction": true, "Autobiography": true}, Capacity: 50000, Commitment: 40000},
 		&proto.Publisher{Id: "publisher003", Name: "O'Reilly", Country: "USA", Language: "English", Category: map[string]bool{"Science": true, "Autobiography": true}, Capacity: 50000, Commitment: 20000},
 	}
