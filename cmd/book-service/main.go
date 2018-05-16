@@ -14,7 +14,6 @@ import (
 )
 
 const (
-	address         = "localhost:50051"
 	defaultFilename = "book.json"
 )
 

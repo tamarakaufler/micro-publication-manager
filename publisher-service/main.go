@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/micro/go-micro"
-	//bookProto "github.com/tamarakaufler/publication-manager/book-service/proto"
+	k8s "github.com/micro/kubernetes/go/micro"
 	proto "github.com/tamarakaufler/publication-manager/publisher-service/proto"
 )
 
@@ -58,7 +58,7 @@ func main() {
 	}
 	store := &Store{publishers}
 
-	srv := micro.NewService(
+	srv := k8s.NewService(
 		micro.Name("publication.management.publisher"),
 		micro.Version("latest"),
 	)

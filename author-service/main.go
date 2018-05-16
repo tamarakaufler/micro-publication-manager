@@ -4,6 +4,7 @@ import (
 	"log"
 
 	micro "github.com/micro/go-micro"
+	k8s "github.com/micro/kubernetes/go/micro"
 	proto "github.com/tamarakaufler/publication-manager/author-service/proto"
 
 	"golang.org/x/net/context"
@@ -60,10 +61,10 @@ func (s *service) GetAuthors(ctx context.Context, req *proto.GetRequest, res *pr
 
 func main() {
 
-	microSrv := micro.NewService(
+	microSrv := k8s.NewService(
 		// matches the package name given in the protobuf definition
 		micro.Name("publication.management.author"),
-		micro.Version("latest"),
+		micro.Version("alpha"),
 	)
 	database := &Store{}
 	microSrv.Init()

@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: publisher-service
+  labels:
+    app: publisher-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: publisher-service
+  template:
+    metadata:
+      labels:
+        app: publisher-service
+    spec:
+      containers:
+      - name: publisher-service
+        image: quay.io/tkaufler/publisher-service:alpha
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 50051
+          name: publisher-port           

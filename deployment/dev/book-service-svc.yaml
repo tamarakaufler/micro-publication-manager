@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: book-service
+  labels:
+    app: book-service
+spec:
+  selector:
+    app: book-service
+  ports:
+  - protocol: TCP
+    port: 50053
+    targetPort: 50051

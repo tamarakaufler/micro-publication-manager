@@ -4,6 +4,7 @@ import (
 	"log"
 
 	micro "github.com/micro/go-micro"
+	k8s "github.com/micro/kubernetes/go/micro"
 	proto "github.com/tamarakaufler/publication-manager/book-service/proto"
 	publisherProto "github.com/tamarakaufler/publication-manager/publisher-service/proto"
 
@@ -74,7 +75,7 @@ func (s *service) GetPublishedBooks(ctx context.Context, req *proto.GetRequest, 
 
 func main() {
 
-	microSrv := micro.NewService(
+	microSrv := k8s.NewService(
 		micro.Name("publication.management.book"),
 		micro.Version("latest"),
 	)

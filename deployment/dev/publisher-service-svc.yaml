@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: publisher-service
+  labels:
+    app: publisher-service
+spec:
+  selector:
+    app: publisher-service
+  ports:
+  - protocol: TCP
+    port: 50051
+    targetPort: 50051
