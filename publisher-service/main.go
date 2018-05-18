@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/micro/go-micro"
-	//bookProto "github.com/tamarakaufler/publication-manager/book-service/proto"
+	_ "github.com/micro/go-plugins/registry/kubernetes"
 	proto "github.com/tamarakaufler/publication-manager/publisher-service/proto"
 )
 
@@ -23,8 +23,11 @@ type Store struct {
 func (store *Store) FindAvailable(r *proto.Requirement) (*proto.Publisher, error) {
 	for _, pub := range store.publishers {
 		if pub.Language != r.Language {
+			//log.Printf("\tpublisher lang: %s - book lang: %s\n", pub.Language, r.Language)
 			continue
 		}
+
+		//log.Printf("\tpublisher : %d - book copies: %d\n", (pub.Capacity - pub.Commitment), r.Copies)
 		if r.Copies <= (pub.Capacity - pub.Commitment) {
 			return pub, nil
 		}

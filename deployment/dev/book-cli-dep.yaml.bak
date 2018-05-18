@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: book-cli
+  labels:
+    app: book-cli
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: book-cli
+  template:
+    metadata:
+      labels:
+        app: book-cli
+    spec:
+      containers:
+      - name: book-cli
+        image: quay.io/tkaufler/book-cli:alpha
+        imagePullPolicy: IfNotPresent

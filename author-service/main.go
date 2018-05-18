@@ -4,6 +4,8 @@ import (
 	"log"
 
 	micro "github.com/micro/go-micro"
+	_ "github.com/micro/go-plugins/registry/kubernetes"
+
 	proto "github.com/tamarakaufler/publication-manager/author-service/proto"
 
 	"golang.org/x/net/context"

@@ -8,6 +8,7 @@ import (
 
 	microclient "github.com/micro/go-micro/client"
 	"github.com/micro/go-micro/cmd"
+	_ "github.com/micro/go-plugins/registry/kubernetes"
 
 	pb "github.com/tamarakaufler/publication-manager/book-service/proto"
 	"golang.org/x/net/context"

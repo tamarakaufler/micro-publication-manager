@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: author-service
+  labels:
+    app: author-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: author-service
+  template:
+    metadata:
+      labels:
+        app: author-service
+    spec:
+      containers:
+      - name: author-service
+        image: quay.io/tkaufler/author-service:alpha
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 50051
+          name: author-port           
