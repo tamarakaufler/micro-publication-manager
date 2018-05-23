@@ -3,4 +3,4 @@ build:
 	docker build -t book-cli .
 
 run:
-	docker run -e MICRO_REGISTRY=mdns book-cli
+	docker run --net="host" -e MICRO_REGISTRY=mdns book-cli
