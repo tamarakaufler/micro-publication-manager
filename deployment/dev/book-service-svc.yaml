@@ -1,5 +1,5 @@
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
   name: book-service
   labels:
@@ -7,8 +7,6 @@ metadata:
 spec:
   selector:
     app: book-service
-  type: NodePort
   ports:
   - protocol: TCP
-    port: 50053
-    targetPort: 50051
+    port: 8880

@@ -1,62 +1,57 @@
 package main
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"log"
 	"os"
 
+	micro "github.com/micro/go-micro"
 	microclient "github.com/micro/go-micro/client"
-	"github.com/micro/go-micro/cmd"
-
-	_ "github.com/micro/go-plugins/registry/kubernetes"
-
-	pb "github.com/tamarakaufler/publication-manager/author-service/proto"
+	proto "github.com/tamarakaufler/publication-manager/author-service/proto"
 	"golang.org/x/net/context"
 )
 
-const (
-	address         = "localhost:50051"
-	defaultFilename = "author.json"
-)
-
-func parseFile(file string) (*pb.Author, error) {
-	var author *pb.Author
-	data, err := ioutil.ReadFile(file)
-	if err != nil {
-		return nil, err
-	}
-	json.Unmarshal(data, &author)
-	return author, err
-}
-
 func main() {
-	cmd.Init()
+	microSrv := micro.NewService(
+		micro.Name("publication.manager.author-cli"),
+		micro.Version("latest"),
+	)
+	microSrv.Init()
 
-	client := pb.NewAuthorServiceClient("publication.management.author", microclient.DefaultClient)
+	client := proto.NewAuthorServiceClient("publication.manager.author", microclient.DefaultClient)
 
-	file := defaultFilename
-	if len(os.Args) > 1 {
-		file = os.Args[1]
-	}
+	firstName := "Lucien"
+	lastName := "Kaufler"
+	email := "lucien@gmail.com"
+	password := "topsecreteverybodyknows"
 
-	author, err := parseFile(file)
-
+	r, err := client.CreateAuthor(context.TODO(), &proto.Author{
+		FirstName: firstName,
+		LastName:  lastName,
+		Email:     email,
+		Password:  password,
+	})
 	if err != nil {
-		log.Fatalf("Could not parse file: %v", err)
+		log.Fatalf("Could not create: %v", err)
 	}
+	log.Printf("Created: %s", r.Author.Id)
 
-	r, err := client.CreateAuthor(context.Background(), author)
+	all, err := client.GetAll(context.Background(), &proto.GetAllRequest{})
 	if err != nil {
-		log.Fatalf("Could not create author: %v", err)
-	}
-	log.Printf("Author created: %t", r.Created)
-
-	all, err := client.GetAuthors(context.Background(), &pb.GetRequest{})
-	if err != nil {
-		log.Fatalf("Could not list consignments: %v", err)
+		log.Fatalf("Could not list authors: %v", err)
 	}
 	for _, v := range all.Authors {
 		log.Println(v)
 	}
+
+	authResponse, err := client.Authenticate(context.TODO(), &proto.Author{
+		Email:    email,
+		Password: password,
+	})
+
+	if err != nil {
+		log.Fatalf("Could not authenticate author: %s error: %v\n", email, err)
+	}
+
+	log.Printf("Your access token is: %s \n", authResponse.Token)
+	os.Exit(0)
 }

@@ -18,6 +18,16 @@ spec:
       - name: publisher-service
         image: quay.io/tkaufler/publisher-service:alpha
         imagePullPolicy: IfNotPresent
+        command: [
+          "./publisher-service",
+          "--selector=static",
+          "--server_address=:8880"
+        ]
+        env:
+        - name: DB_HOST
+          value: "mongo:27017"
+        - name: UPDATED_AT
+          value: "Mon 21 May 2018 13:10:45 GMT"
         ports:
-        - containerPort: 50051
+        - containerPort: 8880
           name: publisher-port           

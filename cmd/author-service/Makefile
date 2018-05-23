@@ -3,4 +3,6 @@ build:
 	docker build -t author-cli .
 
 run:
-	docker run -e MICRO_REGISTRY=kubernetes author-cli
+	docker run --net="host" \
+	-e MICRO_REGISTRY=mdns \
+	author-cli
