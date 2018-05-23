@@ -18,6 +18,18 @@ spec:
       - name: author-service
         image: quay.io/tkaufler/author-service:alpha
         imagePullPolicy: IfNotPresent
+        command: [
+          "./author-service",
+          "--selector=static",
+          "--server_address=:8880"
+        ]
+        env:
+        - name: DB_HOST
+          value: "localhost:5432"
+        - name: DB_HOST
+          value: "postgres"
+        - name: UPDATED_AT
+          value: "Mon 21 May 2018 13:10:45 GMT"
         ports:
-        - containerPort: 50051
-          name: author-port           
+        - containerPort: 8880
+          name: author-port                     

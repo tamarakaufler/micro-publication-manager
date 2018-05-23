@@ -4,73 +4,38 @@ import (
 	"log"
 
 	micro "github.com/micro/go-micro"
-	_ "github.com/micro/go-plugins/registry/kubernetes"
-
+	_ "github.com/micro/go-plugins/registry/mdns"
+	k8s "github.com/micro/kubernetes/go/micro"
 	proto "github.com/tamarakaufler/publication-manager/author-service/proto"
-
-	"golang.org/x/net/context"
 )
 
-type Datastore interface {
-	Create(*proto.Author) error
-	GetAll() ([]*proto.Author, error)
-}
-
-type Store struct {
-	authors []*proto.Author
-}
-
-func (database *Store) Create(author *proto.Author) error {
-	authors := append(database.authors, author)
-	database.authors = authors
-	return nil
-}
-
-func (database *Store) GetAll() ([]*proto.Author, error) {
-	return database.authors, nil
-}
-
-// service implements all of the methods to satisfy the service
-// defined in our protobuf definition
-type service struct {
-	database Datastore
-}
-
-// CreateAuthor - service method to store the author in the database
-func (s *service) CreateAuthor(ctx context.Context, author *proto.Author, res *proto.Response) error {
-	err := s.database.Create(author)
-	if err != nil {
-		return err
-	}
-
-	res.Created = true
-	res.Author = author
-
-	return nil
-}
-
-func (s *service) GetAuthors(ctx context.Context, req *proto.GetRequest, res *proto.Response) error {
-	authors, err := s.database.GetAll()
-	if err != nil {
-		return err
-	}
-
-	res.Authors = authors
-
-	return nil
-}
-
 func main() {
+	log.Println("Starting author-service ...")
 
-	microSrv := micro.NewService(
-		// matches the package name given in the protobuf definition
+	conn, err := DBConnection()
+	defer conn.Close()
+
+	if err != nil {
+		log.Fatalf("Could not connect to DB: %v", err)
+	} else {
+		log.Println("Connected to database ...")
+	}
+
+	// Automatically migrates author struct
+	// into database columns/types etc
+	// Will migrate changes each time
+	// the service is restarted.
+	conn.AutoMigrate(&proto.Author{})
+	db := &Store{conn}
+	tokenService := TokenService{}
+
+	microSrv := k8s.NewService(
 		micro.Name("publication.management.author"),
 		micro.Version("latest"),
 	)
-	database := &Store{}
 	microSrv.Init()
 
-	proto.RegisterAuthorServiceHandler(microSrv.Server(), &service{database})
+	proto.RegisterAuthorServiceHandler(microSrv.Server(), &service{db, tokenService})
 
 	//reflection.Register(s)
 	if err := microSrv.Run(); err != nil {

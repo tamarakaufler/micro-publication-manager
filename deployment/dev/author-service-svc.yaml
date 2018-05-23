@@ -9,5 +9,4 @@ spec:
     app: author-service
   ports:
   - protocol: TCP
-    port: 50052
-    targetPort: 50051
+    port: 8880

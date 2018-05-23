@@ -4,6 +4,7 @@ package publication.manager.publisher;
 
 service PublisherService {
 	rpc FindAvailable(Requirement) returns (Response) {}
+    rpc CreatePublisher(Publisher) returns (Response) {}
 }
 
 message Publisher {
@@ -14,6 +15,7 @@ message Publisher {
 	map<string, bool> category = 5;
 	int32 capacity = 6;
 	int32 commitment = 7;
+    bool created = 8;
 }
 
 message Requirement {

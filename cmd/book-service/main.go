@@ -10,7 +10,7 @@ import (
 	"github.com/micro/go-micro/cmd"
 	_ "github.com/micro/go-plugins/registry/kubernetes"
 
-	pb "github.com/tamarakaufler/publication-manager/book-service/proto"
+	proto "github.com/tamarakaufler/publication-manager/book-service/proto"
 	"golang.org/x/net/context"
 )
 
@@ -18,8 +18,8 @@ const (
 	defaultFilename = "book.json"
 )
 
-func parseFile(file string) (*pb.Book, error) {
-	var book *pb.Book
+func parseFile(file string) (*proto.Book, error) {
+	var book *proto.Book
 	data, err := ioutil.ReadFile(file)
 	if err != nil {
 		return nil, err
@@ -31,7 +31,7 @@ func parseFile(file string) (*pb.Book, error) {
 func main() {
 	cmd.Init()
 
-	client := pb.NewBookServiceClient("publication.management.book", microclient.DefaultClient)
+	client := proto.NewBookServiceClient("publication.management.book", microclient.DefaultClient)
 
 	file := defaultFilename
 	if len(os.Args) > 1 {
@@ -51,7 +51,7 @@ func main() {
 	}
 	log.Printf("Book will be published by : %s", r.Book.GetPublisherId())
 
-	all, err := client.GetPublishedBooks(context.Background(), &pb.GetRequest{})
+	all, err := client.GetPublishedBooks(context.Background(), &proto.GetRequest{})
 	if err != nil {
 		log.Fatalf("Could not list consignments: %v", err)
 	}

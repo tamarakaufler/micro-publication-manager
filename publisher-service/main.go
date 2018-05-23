@@ -1,76 +1,44 @@
 package main
 
 import (
-	"context"
-	"errors"
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/micro/go-micro"
-	_ "github.com/micro/go-plugins/registry/kubernetes"
+	_ "github.com/micro/go-plugins/registry/mdns"
+	k8s "github.com/micro/kubernetes/go/micro"
 	proto "github.com/tamarakaufler/publication-manager/publisher-service/proto"
 )
 
-type Datastore interface {
-	FindAvailable(*proto.Requirement) (*proto.Publisher, error)
-}
-
-type Store struct {
-	publishers []*proto.Publisher
-	//publications map[string][]*bookProto.Book
-}
-
-// FindAvailable - checks a requirement against a map of publishers,
-func (store *Store) FindAvailable(r *proto.Requirement) (*proto.Publisher, error) {
-	for _, pub := range store.publishers {
-		if pub.Language != r.Language {
-			//log.Printf("\tpublisher lang: %s - book lang: %s\n", pub.Language, r.Language)
-			continue
-		}
-
-		//log.Printf("\tpublisher : %d - book copies: %d\n", (pub.Capacity - pub.Commitment), r.Copies)
-		if r.Copies <= (pub.Capacity - pub.Commitment) {
-			return pub, nil
-		}
-	}
-	return nil, errors.New("No publisher found by that spec")
-}
-
-// grpc service handler
-type service struct {
-	store Datastore
-}
-
-func (s *service) FindAvailable(ctx context.Context, req *proto.Requirement, res *proto.Response) error {
-
-	// Find the next available publisher
-	publisher, err := s.store.FindAvailable(req)
-	if err != nil {
-		return err
-	}
-
-	// Set the publisher as part of the response message type
-	res.Publisher = publisher
-	return nil
-}
+const (
+	defaultHost = "localhost:27017"
+)
 
 func main() {
-	publishers := []*proto.Publisher{
-		&proto.Publisher{Id: "publisher001", Name: "Mannings", Country: "USA", Language: "English", Category: map[string]bool{"Autobiography": true, "Fiction": true, "Programming": true}, Capacity: 50000, Commitment: 45000},
-		&proto.Publisher{Id: "publisher002", Name: "LeMonde", Country: "France", Language: "French", Category: map[string]bool{"Fiction": true, "Autobiography": true}, Capacity: 50000, Commitment: 40000},
-		&proto.Publisher{Id: "publisher003", Name: "O'Reilly", Country: "USA", Language: "English", Category: map[string]bool{"Science": true, "Autobiography": true}, Capacity: 50000, Commitment: 20000},
-	}
-	store := &Store{publishers}
+	host := os.Getenv("DB_HOST")
 
-	srv := micro.NewService(
+	if host == "" {
+		host = defaultHost
+	}
+
+	session, err := CreateSession(host)
+	defer session.Close()
+
+	if err != nil {
+		log.Panicf("Could not connect to datastore with host %s - %v", host, err)
+	}
+
+	microSrv := k8s.NewService(
 		micro.Name("publication.management.publisher"),
 		micro.Version("latest"),
 	)
 
-	srv.Init()
+	microSrv.Init()
 
-	proto.RegisterPublisherServiceHandler(srv.Server(), &service{store})
+	proto.RegisterPublisherServiceHandler(microSrv.Server(), &service{session})
 
-	if err := srv.Run(); err != nil {
+	if err := microSrv.Run(); err != nil {
 		fmt.Println(err)
 	}
 }
