@@ -2,12 +2,14 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"log"
 	"os"
 
 	microclient "github.com/micro/go-micro/client"
 	"github.com/micro/go-micro/cmd"
+	"github.com/micro/go-micro/metadata"
 	_ "github.com/micro/go-plugins/registry/kubernetes"
 
 	proto "github.com/tamarakaufler/publication-manager/book-service/proto"
@@ -31,12 +33,18 @@ func parseFile(file string) (*proto.Book, error) {
 func main() {
 	cmd.Init()
 
-	client := proto.NewBookServiceClient("publication.management.book", microclient.DefaultClient)
+	client := proto.NewBookServiceClient("publication.manager.book", microclient.DefaultClient)
 
 	file := defaultFilename
-	if len(os.Args) > 1 {
-		file = os.Args[1]
+	var token string
+	log.Println(os.Args)
+
+	if len(os.Args) < 3 {
+		log.Fatal(errors.New("Not enough arguments, expecing file and token."))
 	}
+
+	file = os.Args[1]
+	token = os.Args[2]
 
 	book, err := parseFile(file)
 
@@ -44,16 +52,21 @@ func main() {
 		log.Fatalf("Could not parse file: %v", err)
 	}
 
-	r, err := client.PublishBook(context.Background(), book)
-	if err != nil {
-		log.Fatalf("Could not publish book: %v", err)
-		return
-	}
-	log.Printf("Book will be published by : %s", r.Book.GetPublisherId())
+	ctx := metadata.NewContext(context.Background(), map[string]string{
+		"token": token,
+	})
 
-	all, err := client.GetPublishedBooks(context.Background(), &proto.GetRequest{})
+	// Test 1
+	r, err := client.PublishBook(ctx, book)
 	if err != nil {
-		log.Fatalf("Could not list consignments: %v", err)
+		log.Fatalf("Could not create: %v", err)
+	}
+	log.Printf("Registered: %t", r.Registered)
+
+	// Test 2
+	all, err := client.GetPublishedBooks(ctx, &proto.GetRequest{})
+	if err != nil {
+		log.Fatalf("Could not list books: %v", err)
 	}
 	for _, v := range all.Books {
 		log.Println(v)

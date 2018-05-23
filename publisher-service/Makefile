@@ -13,7 +13,7 @@ build: protoc
 	docker login quay.io -u tamarakaufler -p $(QUAY_PASS)
 	docker push quay.io/tamarakaufler/publisher-service:$(IMAGE_TAG)
 
-build: protoc
+dev: protoc
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o publisher-service -a -installsuffix cgo main.go \
 	datastore.go store.go service.go 
 

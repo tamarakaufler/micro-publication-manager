@@ -34,6 +34,7 @@ message Response {
     Author author = 2;
     repeated Author authors = 3;
     repeated Error errors = 4;
+    Token token = 5;
 }
 
 message Error {
