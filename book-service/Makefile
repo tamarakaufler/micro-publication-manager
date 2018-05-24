@@ -7,7 +7,6 @@ protoc:
 build: protoc
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o book-service -a -installsuffix cgo main.go \
 	datastore.go store.go service.go 
-
 	docker build -t quay.io/tamarakaufler/book-service:$(IMAGE_TAG) .
 	docker login quay.io -u tamarakaufler -p $(QUAY_PASS)
 	docker push quay.io/tamarakaufler/book-service:$(IMAGE_TAG)
@@ -15,7 +14,6 @@ build: protoc
 dev: protoc
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o book-service -a -installsuffix cgo main.go \
 	datastore.go store.go service.go 
-
 	docker build -t quay.io/tamarakaufler/book-service:$(IMAGE_TAG) .
 
 run:

@@ -3,6 +3,4 @@ build:
 	docker build -t author-cli .
 
 run:
-	docker run --net="host" \
-	-e MICRO_REGISTRY=mdns \
-	author-cli
+	docker run --net="host" -e MICRO_REGISTRY=mdns author-cli
