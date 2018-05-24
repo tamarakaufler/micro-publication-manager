@@ -4,5 +4,4 @@ RUN apk add --no-cache openssh ca-certificates
 RUN mkdir /app
 WORKDIR /app
 COPY publisher-service /app
-EXPOSE 50051
 ENTRYPOINT ["./publisher-service"]
